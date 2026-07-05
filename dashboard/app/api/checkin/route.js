@@ -12,6 +12,12 @@ export async function POST(request) {
       system,
       machine,
       hostname,
+      is_termux,
+      device_brand,
+      device_model,
+      device_manufacturer,
+      android_version,
+      termux_version,
     } = body || {};
 
     if (!device_id) {
@@ -27,8 +33,9 @@ export async function POST(request) {
     const pool = getPool();
 
     await pool.query(
-      `INSERT INTO devices (device_id, package_version, python_version, platform, system, machine, hostname, ip)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+      `INSERT INTO devices (device_id, package_version, python_version, platform, system, machine, hostname, ip,
+                             is_termux, device_brand, device_model, device_manufacturer, android_version, termux_version)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
        ON CONFLICT (device_id) DO UPDATE SET
          package_version = EXCLUDED.package_version,
          python_version = EXCLUDED.python_version,
@@ -37,9 +44,30 @@ export async function POST(request) {
          machine = EXCLUDED.machine,
          hostname = EXCLUDED.hostname,
          ip = EXCLUDED.ip,
+         is_termux = EXCLUDED.is_termux,
+         device_brand = EXCLUDED.device_brand,
+         device_model = EXCLUDED.device_model,
+         device_manufacturer = EXCLUDED.device_manufacturer,
+         android_version = EXCLUDED.android_version,
+         termux_version = EXCLUDED.termux_version,
          last_seen = now(),
          checkin_count = devices.checkin_count + 1`,
-      [device_id, package_version, python_version, platform, system, machine, hostname, ip]
+      [
+        device_id,
+        package_version,
+        python_version,
+        platform,
+        system,
+        machine,
+        hostname,
+        ip,
+        Boolean(is_termux),
+        device_brand || null,
+        device_model || null,
+        device_manufacturer || null,
+        android_version || null,
+        termux_version || null,
+      ]
     );
 
     return NextResponse.json({ ok: true });
