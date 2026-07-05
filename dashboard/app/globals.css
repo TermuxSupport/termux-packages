@@ -72,6 +72,25 @@ body {
 .status-online { background: #3fb950; }
 .status-offline { background: #6e7681; }
 
+.status-text-online { color: #3fb950; font-weight: 600; }
+.status-text-offline { color: #6e7681; font-weight: 600; }
+
+.device-sub {
+  font-size: 0.75rem;
+  color: #8b949e;
+  margin-top: 2px;
+}
+
+.termux-badge {
+  background: #23863622;
+  color: #3fb950;
+  border: 1px solid #23863655;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  white-space: nowrap;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
