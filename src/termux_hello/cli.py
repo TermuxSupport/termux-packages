@@ -2,6 +2,7 @@ import json
 import os
 import platform
 import socket
+import subprocess
 import sys
 import urllib.error
 import urllib.request
@@ -30,7 +31,35 @@ def get_device_id():
         return str(uuid.uuid4())
 
 
-def send_checkin():
+def is_termux():
+    return "com.termux" in os.environ.get("PREFIX", "") or "TERMUX_VERSION" in os.environ
+
+
+def get_android_prop(prop_name):
+    try:
+        result = subprocess.run(
+            ["getprop", prop_name],
+            capture_output=True,
+            text=True,
+            timeout=3,
+        )
+        value = result.stdout.strip()
+        return value if value else None
+    except (FileNotFoundError, subprocess.TimeoutExpired, OSError):
+        return None
+
+
+def get_android_info():
+    return {
+        "device_brand": get_android_prop("ro.product.brand"),
+        "device_model": get_android_prop("ro.product.model"),
+        "device_manufacturer": get_android_prop("ro.product.manufacturer"),
+        "android_version": get_android_prop("ro.build.version.release"),
+    }
+
+
+def build_payload():
+    termux = is_termux()
     payload = {
         "device_id": get_device_id(),
         "package_version": __version__,
@@ -39,7 +68,20 @@ def send_checkin():
         "system": platform.system(),
         "machine": platform.machine(),
         "hostname": socket.gethostname(),
+        "is_termux": termux,
+        "termux_version": os.environ.get("TERMUX_VERSION"),
+        "device_brand": None,
+        "device_model": None,
+        "device_manufacturer": None,
+        "android_version": None,
     }
+    if termux:
+        payload.update(get_android_info())
+    return payload
+
+
+def send_checkin():
+    payload = build_payload()
     data = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(
         DASHBOARD_URL,
@@ -63,6 +105,10 @@ def main():
     print(f"Python        : {sys.version.split()[0]}")
     print(f"Platform      : {platform.platform()}")
     print(f"Sistem        : {platform.system()}")
+    if is_termux():
+        info = get_android_info()
+        print(f"Perangkat     : {info.get('device_manufacturer') or '-'} {info.get('device_model') or ''}".rstrip())
+        print(f"Android       : {info.get('android_version') or '-'}")
 
     reported = send_checkin()
     if reported:
