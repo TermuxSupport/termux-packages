@@ -91,6 +91,28 @@ body {
   white-space: nowrap;
 }
 
+.delete-btn {
+  width: auto;
+  margin-top: 12px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #f8514955;
+  background: #f8514918;
+  color: #f85149;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.delete-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.delete-btn:active:not(:disabled) {
+  background: #f8514930;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
