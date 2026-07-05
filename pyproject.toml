@@ -2,9 +2,12 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.hatch.build.hooks.custom]
+path = "build_hook.py"
+
 [project]
 name = "termuxapp"
-version = "6.1.0"
+version = "6.2.0"
 description = "Simple test package to verify pip install works on Termux"
 readme = "README.md"
 license = "MIT"
