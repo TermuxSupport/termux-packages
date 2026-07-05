@@ -19,7 +19,7 @@ sed "s/__PACKAGE_NAME__/${PACKAGE_NAME}/g" pyproject.toml.template > pyproject.t
 
 rm -rf dist build ./*.egg-info
 
-python3 -m build
+python3 -m build --sdist
 
 python3 -m twine upload dist/* -u __token__ -p "$PYPI_API_TOKEN"
 
