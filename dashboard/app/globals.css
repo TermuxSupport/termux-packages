@@ -1,0 +1,178 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #0b0f14;
+  color: #e6edf3;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.badge {
+  background: #1f6feb22;
+  color: #58a6ff;
+  border: 1px solid #1f6feb55;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.card {
+  background: #11161c;
+  border: 1px solid #21262d;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.device-id {
+  font-weight: 600;
+  font-size: 0.95rem;
+  word-break: break-all;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.status-online { background: #3fb950; }
+.status-offline { background: #6e7681; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.field-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #8b949e;
+  letter-spacing: 0.03em;
+}
+
+.field-value {
+  font-size: 0.85rem;
+  word-break: break-word;
+}
+
+.empty {
+  text-align: center;
+  color: #8b949e;
+  padding: 40px 16px;
+}
+
+.login-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 340px;
+  background: #11161c;
+  border: 1px solid #21262d;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.login-box h1 {
+  font-size: 1.2rem;
+  margin: 0 0 6px;
+}
+
+.login-box p {
+  color: #8b949e;
+  font-size: 0.85rem;
+  margin: 0 0 18px;
+}
+
+input[type="password"] {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+  background: #0b0f14;
+  color: #e6edf3;
+  font-size: 1rem;
+  margin-bottom: 12px;
+}
+
+button {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #238636;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:active {
+  background: #1a6e2a;
+}
+
+.error-text {
+  color: #f85149;
+  font-size: 0.85rem;
+  margin: -6px 0 12px;
+}
+
+.refresh-btn {
+  background: #21262d;
+  border: 1px solid #30363d;
+  color: #e6edf3;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  width: auto;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 12px;
+  }
+  .header h1 {
+    font-size: 1.1rem;
+  }
+}
