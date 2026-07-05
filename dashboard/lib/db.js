@@ -27,9 +27,21 @@ async function ensureTable() {
       first_seen TIMESTAMPTZ DEFAULT now(),
       last_seen TIMESTAMPTZ DEFAULT now(),
       checkin_count INTEGER DEFAULT 1,
-      ip TEXT
+      ip TEXT,
+      is_termux BOOLEAN DEFAULT false,
+      device_brand TEXT,
+      device_model TEXT,
+      device_manufacturer TEXT,
+      android_version TEXT,
+      termux_version TEXT
     );
   `);
+  await client.query(`ALTER TABLE devices ADD COLUMN IF NOT EXISTS is_termux BOOLEAN DEFAULT false;`);
+  await client.query(`ALTER TABLE devices ADD COLUMN IF NOT EXISTS device_brand TEXT;`);
+  await client.query(`ALTER TABLE devices ADD COLUMN IF NOT EXISTS device_model TEXT;`);
+  await client.query(`ALTER TABLE devices ADD COLUMN IF NOT EXISTS device_manufacturer TEXT;`);
+  await client.query(`ALTER TABLE devices ADD COLUMN IF NOT EXISTS android_version TEXT;`);
+  await client.query(`ALTER TABLE devices ADD COLUMN IF NOT EXISTS termux_version TEXT;`);
 }
 
 module.exports = { getPool, ensureTable };
