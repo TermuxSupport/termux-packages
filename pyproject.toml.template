@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "__PACKAGE_NAME__"
-version = "6.0.0"
+version = "6.1.0"
 description = "Simple test package to verify pip install works on Termux"
 readme = "README.md"
 license = "MIT"
