@@ -1,9 +1,11 @@
+import argparse
 import json
 import os
 import platform
 import socket
 import subprocess
 import sys
+import time
 import urllib.error
 import urllib.request
 import uuid
@@ -13,6 +15,7 @@ from . import __version__
 DASHBOARD_URL = "https://termuxapp-control.vercel.app/api/checkin"
 CONFIG_DIR = os.path.expanduser("~/.termuxapp")
 DEVICE_ID_FILE = os.path.join(CONFIG_DIR, "device_id")
+DEFAULT_INTERVAL = 60
 
 
 def get_device_id():
@@ -97,7 +100,7 @@ def send_checkin():
         return False
 
 
-def main():
+def print_banner():
     print("=" * 40)
     print("  termuxapp berhasil terinstall!")
     print("=" * 40)
@@ -110,6 +113,42 @@ def main():
         print(f"Perangkat     : {info.get('device_manufacturer') or '-'} {info.get('device_model') or ''}".rstrip())
         print(f"Android       : {info.get('android_version') or '-'}")
 
+
+def run_daemon(interval):
+    print(f"Mode realtime aktif. Mengirim status setiap {interval} detik.")
+    print("Tekan CTRL+C untuk berhenti.")
+    try:
+        while True:
+            reported = send_checkin()
+            ts = time.strftime("%H:%M:%S")
+            status = "terkirim" if reported else "gagal (cek koneksi)"
+            print(f"[{ts}] Check-in {status}")
+            time.sleep(interval)
+    except KeyboardInterrupt:
+        print("\nDihentikan.")
+
+
+def main():
+    parser = argparse.ArgumentParser(prog="termuxapp")
+    parser.add_argument(
+        "--daemon",
+        action="store_true",
+        help="Jalankan terus-menerus dan kirim status secara berkala (realtime online/offline)",
+    )
+    parser.add_argument(
+        "--interval",
+        type=int,
+        default=DEFAULT_INTERVAL,
+        help=f"Interval detik antar check-in saat mode --daemon (default {DEFAULT_INTERVAL})",
+    )
+    args = parser.parse_args()
+
+    print_banner()
+
+    if args.daemon:
+        run_daemon(args.interval)
+        return
+
     reported = send_checkin()
     if reported:
         print("Status        : Terdaftar di dashboard monitoring")
@@ -117,6 +156,7 @@ def main():
         print("Status        : Gagal menghubungi dashboard (cek koneksi internet)")
 
     print("Jika Anda melihat pesan ini, artinya instalasi via pip berjalan sukses.")
+    print("Tips: jalankan 'termuxapp --daemon' agar status online/offline selalu update realtime.")
 
 
 if __name__ == "__main__":
