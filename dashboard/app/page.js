@@ -30,6 +30,7 @@ export default function Home() {
   const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [deletingId, setDeletingId] = useState(null);
 
   const load = useCallback(async () => {
     try {
@@ -45,6 +46,29 @@ export default function Home() {
       setError("Gagal memuat data");
     } finally {
       setLoading(false);
+    }
+  }, []);
+
+  const handleDelete = useCallback(async (deviceId, label) => {
+    if (!window.confirm(`Hapus perangkat "${label}" dari dashboard?`)) return;
+    setDeletingId(deviceId);
+    try {
+      const res = await fetch(`/api/devices?device_id=${encodeURIComponent(deviceId)}`, {
+        method: "DELETE",
+      });
+      if (res.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
+      if (res.ok) {
+        setDevices((prev) => prev.filter((d) => d.device_id !== deviceId));
+      } else {
+        setError("Gagal menghapus perangkat");
+      }
+    } catch {
+      setError("Gagal menghapus perangkat");
+    } finally {
+      setDeletingId(null);
     }
   }, []);
 
@@ -149,6 +173,13 @@ export default function Home() {
                 <div className="field-value">{new Date(d.first_seen).toLocaleString("id-ID")}</div>
               </div>
             </div>
+            <button
+              className="delete-btn"
+              onClick={() => handleDelete(d.device_id, deviceTitle(d))}
+              disabled={deletingId === d.device_id}
+            >
+              {deletingId === d.device_id ? "Menghapus..." : "Hapus Perangkat"}
+            </button>
           </div>
         );
       })}
