@@ -3,7 +3,8 @@ import { ensureTable, getPool } from "../../../lib/db";
 import { isAuthed } from "../../../lib/auth";
 
 export async function GET(request) {
-  if (!isAuthed(request)) {
+  const authed = await isAuthed(request);
+  if (!authed) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
@@ -12,7 +13,8 @@ export async function GET(request) {
     const pool = getPool();
     const result = await pool.query(
       `SELECT device_id, package_version, python_version, platform, system, machine, hostname, ip,
-              first_seen, last_seen, checkin_count
+              first_seen, last_seen, checkin_count,
+              is_termux, device_brand, device_model, device_manufacturer, android_version, termux_version
        FROM devices
        ORDER BY last_seen DESC`
     );
